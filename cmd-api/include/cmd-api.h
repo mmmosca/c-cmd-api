@@ -29,10 +29,6 @@ Author Marco M. Mosca, email: marcomichele.mosca@gmail.com
 #include <string.h>
 #include <Windows.h>
 
-int optind, argvind, start, formatind, argformatind;
-char* optargW;
-char *curr_option;
-
 int isCharInString(char c, char* str);
 int AreStringsEqualFrom(const char* s1, const char* s2, int from);
 int isSubstring(char* sub, char* str);

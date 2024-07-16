@@ -16,7 +16,7 @@ Author Marco M. Mosca, email: marcomichele.mosca@gmail.com
 ]]
 
 cmake_minimum_required(VERSION 3.5.0)
-project(cmd-api VERSION 0.1.0 LANGUAGES C)
+project(cmd-api VERSION 0.1.1 LANGUAGES C)
 
 include(CTest)
 
