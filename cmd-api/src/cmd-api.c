@@ -101,8 +101,6 @@ char* strsep(char** elem_pointer, char* pattern) {
 
 char* getoptW(int argc, char** argv, char* format) {
 
-	static int optind = 1, argvind = 2, formatind = -1, argformatind = 0;
-	static char *optargW = NULL, *curr_option;
 	/*if optind is one means that there are no more options*/
 	if (optind == -1) {
 		return NULL;
