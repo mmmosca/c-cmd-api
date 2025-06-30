@@ -27,7 +27,10 @@ Author Marco M. Mosca, email: marcomichele.mosca@gmail.com
 
 #include <stdio.h>
 #include <string.h>
-#include <Windows.h>
+#include <stdlib.h>
+
+static int optind = 1, argvind = 2, formatind = -1, argformatind = 0;
+static char *optargW = NULL, *curr_option;
 
 int isCharInString(char c, char* str);
 int AreStringsEqualFrom(const char* s1, const char* s2, int from);
