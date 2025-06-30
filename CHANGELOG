@@ -1,5 +1,11 @@
 All changes to the repository will be reported here
 
+## [0.1.2]
+### Changed
+- Move static variables in header
+### Removed
+- Remove unused variable in CI
+
 ## [0.1.1]
 ### Removed
 - Variables in header
