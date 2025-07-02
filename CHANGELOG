@@ -1,5 +1,11 @@
 All changes to the repository will be reported here
 
+## [0.2.0]
+### Changed
+- Debug build type in CI
+### Added
+- Struct for opt and arg
+
 ## [0.1.2]
 ### Changed
 - Move static variables in header
