@@ -21,17 +21,18 @@ Author Marco M. Mosca, email: marcomichele.mosca@gmail.com
 void test_longopt_shortopt_error()
 {
 	char* arr[] = {"exe", "-o", "val1", "-opt2", "val2"};
-	char* w;
+	optarg_t* optarg;
   
-	while ((w = getoptW(5, arr, "o:|opt2:|")) != NULL) {
-		if (strcmp(w, "o") == 0) {
-      		assert(strcmp(optargW, "val1") == 0);
+	while ((optarg = getoptW(5, arr, "o:|opt2:|")) != NULL) {
+		if (strcmp(optarg->opt, "o") == 0) {
+      		assert(strcmp(optarg->arg, "val1") == 0);
 			continue;
 		}
-		if (strcmp(w, "opt2") == 0) {
-      		assert(strcmp(optargW, "val2") == 0);
+		if (strcmp(optarg->opt, "opt2") == 0) {
+      		assert(strcmp(optarg->arg, "val2") == 0);
 			continue;
 		}
+		free(optarg);
 	}
 }
 

@@ -20,9 +20,9 @@ Author Marco M. Mosca, email: marcomichele.mosca@gmail.com
 void test_longopt_format_error()
 {
 	char* arr[] = {"exe", "-notaopt", "val1", "-opt2", "val2"};
-	char* w;
+	optarg_t* optarg;
   
-	while ((w = getoptW(5, arr, "opt1:|opt2:|")) != NULL);
+	while ((optarg = getoptW(5, arr, "opt1:|opt2:|")) != NULL);
 }
 
 int main()
