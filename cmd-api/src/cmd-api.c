@@ -16,19 +16,9 @@ Author Marco M. Mosca, email: marcomichele.mosca@gmail.com
 */
 #include "cmd-api.h"
 
-
-int isCharInString(char c, char* str) {
-	int i = 0, len=strlen(str);
-	while (i < len) {
-		if (str[i] == c) return i;/* return the index */
-		i++;
-	}
-	return -1; /*not found*/
-}
-
 int AreStringsEqualFrom(const char* s1, const char* s2,int from) {
 	int len1, len2, i=0, lensub, lenbig;
-	const char* bigger, *smaller;
+	const char *bigger, *smaller;
 
 	if ((s1 == NULL) || (s2 == NULL)) return 0;
 
@@ -63,7 +53,7 @@ int isSubstring(char* sub, char* str) {
 	int sublen= strlen(sub), len = strlen(str), i=0;
 
 	while (i <= len-sublen) {
-		if (AreStringsEqualFrom(sub, str,0)) {
+		if (AreStringsEqualFrom(sub, str, 0)) {
 			return i;
 		}
 		i++;
@@ -73,130 +63,66 @@ int isSubstring(char* sub, char* str) {
 	return -1;
 }
 
-char* strsep(char** elem_pointer, char* pattern) {
-	char* current_tkn, *p;
-	int i = 0, j, len;
+optarg_t* getoptW(int argc, char** argv, char* format) {
+	/**
+	 * - argvind -- Index of the option's argument.
+	 *             Start with the second word after the executable.
+	 * - formatind -- Index of the option in the format string
+	 * - argformatind -- Starting index of the argument types in the format string 
+	 */
+	int argvind, formatind, argformatind;
+	optarg_t* optarg = (optarg_t*)malloc(sizeof(optarg_t));
 
-	if (*elem_pointer == NULL || pattern == NULL) exit(EXIT_FAILURE);	
-	len = strlen(*elem_pointer); /*len of the entire string*/
-	p = *elem_pointer;
-	while ((isCharInString(p[i], pattern) == -1) && (i < len)) {
-		i++;
-	}
-	len = i; /*len of the first token*/
-	current_tkn = (char*) malloc(len * sizeof(char)+1);
-
-	j = 0;
-	for (i = 0; i < len; i++) {
-		if (p[i] != ' ') {
-			current_tkn[j] = p[i];
-			j++;
-		}	
-	}
-	current_tkn[j] = '\0';
-
-	*elem_pointer += (len+1);
-	return current_tkn;
-}
-
-char* getoptW(int argc, char** argv, char* format) {
-
-	/*if optind is one means that there are no more options*/
 	if (optind == -1) {
 		return NULL;
 	}
-
-	/*if optind goes over the number of argument commandline*/
 	if (optind > argc - 1) {
-		PRINT_DATAW();
 		puts("Error in parameters number!");
-		return NULL;
-	}
-	if (argv[optind][0] != '-') {
-		PRINT_DATAW();
-		puts("It is not an option!");
 		exit(EXIT_FAILURE);
 	}
-
-	curr_option = ++argv[optind];
-	if ((formatind = isSubstring(argv[optind], format)) >= 0) {
-		argformatind = formatind + strlen(argv[optind]);
-		/*Format substring is not at the end of the format line*/
-		if (argformatind < (int)strlen(format)) {
-			argvind = optind + 1;
-			/*if the argument index (argvind) in the array is not out of bounds*/
-			if (argvind <= argc - 1) {
-				/*if there is a ':' in format string, argument is expected after*/
-				if (format[argformatind] == ':') {
-					/*argument expected, update the optargW*/
-					if (argv[argvind][0] != '-') {
-						optargW = argv[argvind];
-						PRINT_DATAW();
-						optind += 2;
-					}
-					/*there is '-' in the argument*/
-					else
-					{
-						optargW = argv[argvind];
-						PRINT_DATAW();
-						puts("This option should have a parameter!");
-						exit(EXIT_FAILURE);
-					}
-				}
-				/*No argument expected for optind option*/
-				else {
-
-					/*check forward if there is no option*/
-					if (argv[argvind][0] != '-') {
-						optargW = argv[argvind];
-						PRINT_DATAW();
-						puts("This option must not have a parameter!");
-						exit(EXIT_FAILURE);
-					}
-
-					if (format[argformatind] != '|') {
-						PRINT_DATAW();
-						puts("Format and input are not valid!");
-						exit(EXIT_FAILURE);
-					}
-					optargW = NULL;
-					PRINT_DATAW();
-					optind++;
-				}
-			}
-			/*if the argument index (argvind) in the array is out of bounds*/
-			else {
-				/*No arguments expected in format*/
-				if (format[argformatind] != '|') {
-					PRINT_DATAW();
-					puts("Format and input are not valid!");
-					exit(EXIT_FAILURE);
-				}
-				optargW = NULL;
-				PRINT_DATAW();
-				optind++;
-			}
-
-		}
-		/*Format substring is at the end of the format line*/
-		else {
-			if (format[argformatind] != '|') {
-				PRINT_DATAW();
-				puts("Format and input are not valid!");
-				exit(EXIT_FAILURE);
-			}
-			optargW = NULL;
-			PRINT_DATAW();
-			optind++;
-		}
-
-		if (optind > argc - 1) optind = -1;
-		return curr_option;
+	if (argv[optind][0] != '-') {
+		puts("It is not an option: missing dash");
+		exit(EXIT_FAILURE);
 	}
-	else {
-		optargW = NULL;
-		PRINT_DATAW();
+	optarg->opt = ++argv[optind];
+	if ((formatind = isSubstring(optarg->opt, format)) == -1) {
+		optarg->arg = NULL;
 		puts("Unknown option!");
 		exit(EXIT_FAILURE);
 	}
+
+	argvind = optind + 1;
+	argformatind = formatind + strlen(optarg->opt);	
+	if ((argvind > argc - 1) && (format[argformatind] != '|')) {
+		puts("Missing end bar for the last option in format string");
+		exit(EXIT_FAILURE);
+	}
+	if (argformatind >= (int)strlen(format)) {
+		puts("Format string is wrong at the end");
+		exit(EXIT_FAILURE);
+	}
+	if ((format[argformatind] == ':') && (argv[argvind][0] == '-')) {
+		puts("Argument expected when : is in format string");
+		exit(EXIT_FAILURE);
+	}
+	if ((format[argformatind] != ':') && (argv[argvind][0] != '-')) {
+		puts("Argument not expected when : is not in format string");
+		exit(EXIT_FAILURE);
+	}
+	if (format[argformatind] == ':') {
+		optarg->arg = argv[argvind];
+		optind += 2;
+		++argformatind;
+	} else {
+		optarg->arg = NULL;
+		++optind;
+	}
+
+	if (format[argformatind] != '|') {
+		puts("Missing end bar in option format");
+		exit(EXIT_FAILURE);
+	}
+
+	if (optind > argc - 1) optind = -1;
+	return optarg;
 }

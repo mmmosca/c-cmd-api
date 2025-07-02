@@ -15,24 +15,24 @@ along with this program. If not, see https://www.gnu.org/licenses/.
 Author Marco M. Mosca, email: marcomichele.mosca@gmail.com
 */
 #include "cmd-api.h"
-#include "string.h"
 #include "assert.h"
 
 
 void test_longopt_basic()
 {
-  char* arr[] = {"exe", "-opt1", "val1", "-opt2", "val2"};
-  char* w;
+	char* arr[] = {"exe", "-opt1", "val1", "-opt2", "val2"};
+	optarg_t* optarg;
   
-	while ((w = getoptW(5, arr, "opt1:|opt2:|")) != NULL) {
-		if (strcmp(w, "opt1") == 0) {
-			assert(strcmp(optargW, "val1") == 0);
+	while ((optarg = getoptW(5, arr, "opt1:|opt2:|")) != NULL) {
+		if (strcmp(optarg->opt, "opt1") == 0) {
+			assert(strcmp(optarg->arg, "val1") == 0);
 			continue;
 		}
-		if (strcmp(w, "opt2") == 0) {
-			assert(strcmp(optargW, "val2") == 0);
+		if (strcmp(optarg->opt, "opt2") == 0) {
+			assert(strcmp(optarg->arg, "val2") == 0);
 			continue;
 		}
+		free(optarg);
 	}
 }
 
