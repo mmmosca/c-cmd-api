@@ -47,21 +47,22 @@ install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib)
 ```
 #include "cmd-api.h"
 int main(int argc, char* argv[]) {
-    char* w;
-    while ((w = getoptW(argc, argv, "o:|opt1:|opt2:|")) != NULL)
+    optarg_t* optarg;
+    while ((optarg = getoptW(argc, argv, "o:|opt1:|opt2:|")) != NULL)
     {
-        if (strcmp(w, "o") == 0) {
-            /*use optargW that has the argument of o*/
+        if (strcmp(optarg->opt, "o") == 0) {
+            /*use optarg->arg that has the argument of o*/
             continue;
         }
-        if (strcmp(w, "opt1") == 0) {
-            /*use optargW that has the argument of opt1*/
+        if (strcmp(optarg->opt, "opt1") == 0) {
+            /*use optarg->arg that has the argument of opt1*/
             continue;
         }
-        if (strcmp(w, "opt2") == 0) {
-            /*use optargW that has the argument of opt2*/
+        if (strcmp(optarg->opt, "opt2") == 0) {
+            /*use optarg->arg that has the argument of opt2*/
             continue;
         }
+        free(optarg);
     }
     ...
 }
